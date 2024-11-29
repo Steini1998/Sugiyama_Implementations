@@ -5,7 +5,7 @@
 
 namespace sugi {
     
-    class cycle_breaking_berger : public step {
+    class cycle_breaking : public step {
     private:
 
         void run() override;

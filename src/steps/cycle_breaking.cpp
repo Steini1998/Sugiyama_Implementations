@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "SUGIPROJ/steps/cycle_breaking_berger.h"
+#include "SUGIPROJ/steps/cycle_breaking.h"
 
 using namespace sugi;
 
 
 /* Implemented GreedyMakeAcyclic-Algorithm */
-void cycle_breaking_berger::run() {
+void cycle_breaking::run() {
     leda::graph& G = m_sugiyama->getGraph();
     m_original_edge_list = G.all_edges();
     leda::node v;
@@ -24,7 +24,7 @@ void cycle_breaking_berger::run() {
     reverseEdgesFromFeedbackSet();
 }
 
-leda::list<leda::edge> cycle_breaking_berger::findOutEdges(leda::node n) {
+leda::list<leda::edge> cycle_breaking::findOutEdges(leda::node n) {
     leda::list<leda::edge> outEdges {};
     leda::edge e;
     forall(e, m_original_edge_list) {
@@ -35,7 +35,7 @@ leda::list<leda::edge> cycle_breaking_berger::findOutEdges(leda::node n) {
     return outEdges;
 }
 
-leda::list<leda::edge> cycle_breaking_berger::findInEdges(leda::node n) {
+leda::list<leda::edge> cycle_breaking::findInEdges(leda::node n) {
     leda::list<leda::edge> inEdges {};
     leda::edge e;
     forall(e, m_original_edge_list) {
@@ -46,21 +46,21 @@ leda::list<leda::edge> cycle_breaking_berger::findInEdges(leda::node n) {
     return inEdges;
 }
 
-void cycle_breaking_berger::updateNewEdgeList(leda::list<leda::edge> new_edges) {
+void cycle_breaking::updateNewEdgeList(leda::list<leda::edge> new_edges) {
     leda::edge e;
     forall (e, new_edges) {
         m_updated_edge_list.push_back(e);
     }
 }
 
-void cycle_breaking_berger::removeAllEdgesFromNodeInOldEdgeList(leda::node n) {
+void cycle_breaking::removeAllEdgesFromNodeInOldEdgeList(leda::node n) {
     leda::edge e;
     forall_inout_edges (e, n) {
         m_original_edge_list.remove(e);
     }
 }
 
-void cycle_breaking_berger::reverseEdgesFromFeedbackSet() {
+void cycle_breaking::reverseEdgesFromFeedbackSet() {
     leda::graph& G = m_sugiyama->getGraph();
     sugi::graph_update_tracker& gut = m_sugiyama->getGraphUpdateTracker();
     leda::edge e;
