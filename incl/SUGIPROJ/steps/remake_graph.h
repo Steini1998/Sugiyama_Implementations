@@ -11,6 +11,8 @@ namespace sugi {
 		
 		void removeDummys();
 		
+		void addRemovedEdges();
+		
 		void reverseEdges();
         
     };

@@ -12,15 +12,27 @@ using namespace leda;
 void sugi::remake_graph::run(){
 	std::cout << "Remake Graph" << std::endl;
 	removeDummys();
+	addRemovedEdges();
 	reverseEdges();
 }
-        
+   
+   
 void sugi::remake_graph::removeDummys(){
 	graph& G = m_sugiyama->getGraph();
 	sugi::graph_update_tracker& tracker = m_sugiyama->getGraphUpdateTracker();
 	node dummy_node;
 	forall(dummy_node, tracker.getAddedNodes()){
 		G.del_node(dummy_node);
+	}
+}
+
+
+void sugi::remake_graph::addRemovedEdges(){
+	graph& G = m_sugiyama->getGraph();
+	sugi::graph_update_tracker& tracker = m_sugiyama->getGraphUpdateTracker();
+	edge e;
+	forall(e, tracker.getRemovedEdges()){
+		G.new_edge(G.source(e), G.target(e));
 	}
 }
 
