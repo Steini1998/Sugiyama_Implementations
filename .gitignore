@@ -1,0 +1,4 @@
+bin/*.lib
+bin/*.exe
+intermediates/steps/*.obj
+intermediates/user_interfaces/*.obj
