@@ -1,10 +1,14 @@
-LDFLAGS = -LIBPATH:$(LEDA_LIBRARY_DIR) -LIBPATH:$(SUGIYAMA_LIBRARY_DIR)
+# Compiler with Options (e.g. for "COMPILER.cpp")
+CXX := cl
+CXXFLAGS := -nologo -W3 -Zm300 -TP -EHsc -Ox -MT
 
 # Project-Directory-Structure
 INCLUDE_DIR := incl
 SOURCE_DIR := src
 INTERMEDIATE_DIR := intermediates
 BINARY_DIR := bin
+
+LEDA_INCLUDE_DIR ?= ..\incl
 
 # Relevant Source-Files
 SOURCE_FILE_NAMES_STEPS := input.cpp cycle_breaking.cpp leveling.cpp remake_graph.cpp vertex_positioning.cpp crossing_reduction.cpp
@@ -23,41 +27,27 @@ SUGIYAMA_LIB := sugiyama.lib
 # Libraries to create
 LIBRARY_NAME := sugi_impl
 STATIC_LIBRARY := $(BINARY_DIR)/$(LIBRARY_NAME).lib
-DYNAMIC_LIBRARY := $(BINARY_DIR)/$(LIBRARY_NAME).dll
 
 
-.PHONY: all
-all: $(STATIC_LIBRARY) $(DYNAMIC_LIBRARY)
-
-$(STATIC_LIBRARY) $(DYNAMIC_LIBRARY): $(SUGIYAMA_LIBRARY_DIR)\$(SUGIYAMA_LIB)
+$(STATIC_LIBRARY): $(SUGIYAMA_LIBRARY_DIR)\$(SUGIYAMA_LIB)
 
 # Static Library only contains this components binaries and not the system-libraries or leda-library
-.PHONY: lib
-lib: $(STATIC_LIBRARY)
-
 $(STATIC_LIBRARY): override CPPFLAGS += -I $(LEDA_INCLUDE_DIR) -I $(SUGIYAMA_INCLUDE_DIR) -I $(INCLUDE_DIR)
 
 $(STATIC_LIBRARY): $(OBJECT_FILES_STEPS) $(OBJECT_FILES_UIS)
 	LIB.EXE /OUT:$@ $^
-	
-
-.PHONY: dll
-dll: $(DYNAMIC_LIBRARY)
-
-$(DYNAMIC_LIBRARY): $(OBJECT_FILES) $(OBJECT_FILES_UIS)
-	LINK.EXE /DLL /OUT:$@ $(LDFLAGS) $(SYSTEM_LIBS) $(LEDA_LIB) $(SUGIYAMA_LIB) $^
 
 
 $(INTERMEDIATE_DIR)/steps/%.obj: $(SOURCE_DIR)/steps/%.cpp
-	$(COMPILE.cpp) $< -Fo$@
+	$(COMPILE.cpp) -Fo$@ $<
 
 
 $(INTERMEDIATE_DIR)/user_interfaces/%.obj: $(SOURCE_DIR)/user_interfaces/%.cpp
-	$(COMPILE.cpp) $< -Fo$@
+	$(COMPILE.cpp) -Fo$@ $<
 
 
 .PHONY: clean
 clean:
-	rm -f $(BINARY_DIR)/*
-	rm -f $(INTERMEDIATE_DIR)/steps/*
-	rm -f $(INTERMEDIATE_DIR)/user_interfaces/*
+	rm -f $(BINARY_DIR)/*.lib
+	rm -f $(INTERMEDIATE_DIR)/steps/*.obj
+	rm -f $(INTERMEDIATE_DIR)/user_interfaces/*.obj
